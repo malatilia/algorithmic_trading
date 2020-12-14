@@ -10,8 +10,6 @@ def chunks(lst, n):
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
 
-stocks = pd.read_csv('sp_500_stocks.csv')
-
 portfolio_size = input('Enter value of your portfolio: ')
 
 try:
@@ -20,6 +18,8 @@ except ValueError:
     print("That's not a number!\nPlease try again:")
     portfolio_size = input('Enter value of your portfolio: ')
     val = float(portfolio_size)
+
+stocks = pd.read_csv('sp_500_stocks.csv')
 
 my_columns = ['Ticker', 'Stock Price', 'Market Capitalisation', 'Number of Shares to Buy']
 symbol_groups = list(chunks(stocks['Ticker'], 100))
@@ -42,7 +42,9 @@ for symbol_string in symbol_strings:
 
 position_size = val/len(final_dataframe.index)
 for i in range(0, len(final_dataframe.index)):
-    #print(len(final_dataframe.index))
     final_dataframe.loc[i, 'Number of Shares to Buy'] = math.floor(position_size/final_dataframe.loc[i, 'Stock Price'])
+
+writer = pd.ExcelWriter('recommended_trades.xlsx', engine='xlsxwriter')
+final_dataframe.to_excel(writer, 'Recommended Trades', index=False)
 
 print(final_dataframe)
