@@ -47,4 +47,49 @@ for i in range(0, len(final_dataframe.index)):
 writer = pd.ExcelWriter('recommended_trades.xlsx', engine='xlsxwriter')
 final_dataframe.to_excel(writer, 'Recommended Trades', index=False)
 
-print(final_dataframe)
+background_color = '0a0a23'
+font_color = '#ffffff'
+
+string_format = writer.book.add_format(
+    {
+        'font_color' : font_color,
+        'bg_color' : background_color,
+        'border' : 1
+    }
+)
+
+dollar_format = writer.book.add_format(
+    {
+        'num_format' : '$0.00',
+        'font_color' : font_color,
+        'bg_color' : background_color,
+        'border' : 1
+    }
+)
+
+integer_format = writer.book.add_format(
+    {
+        'num_format' : '0',
+        'font_color' : font_color,
+        'bg_color' : background_color,
+        'border' : 1
+    }
+)
+
+writer.sheets['Recommended Trades'].write('A1', 'Ticker', string_format)
+writer.sheets['Recommended Trades'].write('B1', 'Stock Price', dollar_format)
+writer.sheets['Recommended Trades'].write('C1', 'Market Capitalisation', dollar_format)
+writer.sheets['Recommended Trades'].write('D1', 'Number of Shares to Buy', integer_format)
+
+column_formats = {
+    'A': ['Ticker', string_format],
+    'B': ['Stock Price', dollar_format],
+    'C': ['Market Capitalisation', dollar_format],
+    'D': ['Number of Shares to Buy', integer_format],
+}
+
+for column in column_formats.keys():
+    writer.sheets['Recommended Trades'].set_column(f'{column}:{column}', 18, column_formats[column][1])
+    writer.sheets['Recommended Trades'].write(f'{column}1', column_formats[column][0], column_formats[column][1])
+
+writer.save()
