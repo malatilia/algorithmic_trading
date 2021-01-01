@@ -41,6 +41,7 @@ for symbol_string in symbol_strings:
         index=my_columns), ignore_index=True) 
 
 position_size = val/len(final_dataframe.index)
+
 for i in range(0, len(final_dataframe.index)):
     final_dataframe.loc[i, 'Number of Shares to Buy'] = math.floor(position_size/final_dataframe.loc[i, 'Stock Price'])
 
